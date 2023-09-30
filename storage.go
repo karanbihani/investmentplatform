@@ -8,15 +8,16 @@ import (
 	//"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
+
 // func goDotEnvVariable(key string) string {
 
 // 	// load .env file
 // 	err := godotenv.Load(".env")
-  
+
 // 	if err != nil {
 // 	  log.Fatalf("Error loading .env file")
 // 	}
-  
+
 // 	return os.Getenv(key)
 // }
 
@@ -38,7 +39,6 @@ func NewPostgresStore()(*PostgresStore, error){
     if err != nil {
         log.Fatal(err)
     }
-    defer db.Close()
 
     err = db.Ping()
     if err != nil {
@@ -49,6 +49,23 @@ func NewPostgresStore()(*PostgresStore, error){
 	return &PostgresStore{
 		db:db,
 	},nil
+}
+
+func (s *PostgresStore) Init() error{
+	return s.CreateAccountTable()
+}
+
+func (s *PostgresStore) CreateAccountTable() error{
+	query := `create table if not exists account(
+		id serial primary key,
+		first_name varchar(50),
+		last_name varchar(50),
+		number serial,
+		balance serial,
+		created_at timestamp
+	)`
+	_,err := s.db.Exec(query)
+	return err
 }
 
 func (s *PostgresStore) CreateAccount(*Account) error{

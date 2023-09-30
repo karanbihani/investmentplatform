@@ -6,14 +6,18 @@ import(
 )
 
 func main(){
-	store,err := NewPostgresStore()
+	store, err := NewPostgresStore()
 	if err!=nil {
 		log.Fatal(err)
 	}
 	
 	//fmt.Printf("%+v\n",store)
 	
-	server := NewAPIServer(":3000")
+	if err := store.Init(); err!=nil{
+		log.Fatal(err)
+	}
+
+	server := NewAPIServer(":3000", store)
 	server.Run()
 
 	//fmt.Println("Yeah Buddy it works!")
