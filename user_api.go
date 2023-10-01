@@ -23,6 +23,15 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
+func WithJWTAuth(handlerFunc http.HandlerFunc) http.HandlerFunc{
+	
+	fmt.Println("calling JWT Auth")
+
+	return func (w http.ResponseWriter, r *http.Request)  {
+		handlerFunc(w, r)
+	}
+}
+
 type APIFunc func(http.ResponseWriter, *http.Request) error
 
 type APIError struct {
