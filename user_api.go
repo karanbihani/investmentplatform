@@ -25,9 +25,8 @@ func WriteJSON(w http.ResponseWriter, status int, v any) error {
 
 func WithJWTAuth(handlerFunc http.HandlerFunc) http.HandlerFunc{
 	
-	fmt.Println("calling JWT Auth")
-
 	return func (w http.ResponseWriter, r *http.Request)  {
+		fmt.Println("calling JWT Auth")
 		handlerFunc(w, r)
 	}
 }
@@ -62,7 +61,7 @@ func (s *APIServer) Run() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/account", MakeHTTPHandleFunc(s.handleAccount))
-	router.HandleFunc("/account/{id}", MakeHTTPHandleFunc(s.handleGetAccountById))
+	router.HandleFunc("/account/{id}", WithJWTAuth(MakeHTTPHandleFunc(s.handleGetAccountById)))
 	router.HandleFunc("/transfer", MakeHTTPHandleFunc(s.handleTransfer))
 
 	log.Println("JSON API server running on port : ", s.listenAdder)
