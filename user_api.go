@@ -54,6 +54,7 @@ func (s *APIServer) Run() {
 
 	router.HandleFunc("/account", MakeHTTPHandleFunc(s.handleAccount))
 	router.HandleFunc("/account/{id}", MakeHTTPHandleFunc(s.handleGetAccountById))
+	router.HandleFunc("/transfer", MakeHTTPHandleFunc(s.handleTransfer))
 
 	log.Println("JSON API server running on port : ", s.listenAdder)
 
@@ -139,4 +140,14 @@ func GetId(r *http.Request) (int, error) {
 		return id, fmt.Errorf("invalid id given %s", idStr)
 	}
 	return id, nil
+}
+
+func (s * APIServer) handleTransfer(w http.ResponseWriter, r *http.Request) error{
+	transferReq := new(TransferRequest)
+	if err:= json.NewDecoder(r.Body).Decode(transferReq); err != nil{
+		return err
+	}
+	defer r.Body.Close()
+
+	return WriteJSON(w, http.StatusOK, transferReq)
 }
