@@ -15,6 +15,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	jwt "github.com/golang-jwt/jwt/v4"
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
@@ -30,6 +31,8 @@ func WithJWTAuth(handlerFunc http.HandlerFunc) http.HandlerFunc{
 		handlerFunc(w, r)
 	}
 }
+
+func validateJWT(token string) (*jwt.Token, error)
 
 type APIFunc func(http.ResponseWriter, *http.Request) error
 
